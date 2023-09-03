@@ -3,10 +3,12 @@ import "./App.css";
 import Home from "./components/Home";
 import { useState } from "react";
 import DownloadLinkComponent from "./components/DownloadLinkComponent";
+import { Hourglass } from "react-loader-spinner";
 
 function App() {
   const [file, setFile] = useState(undefined);
   const [downloadLink, setDownloadLink] = useState("");
+  const [loading, setLoading] = useState(false);
   
 
   const getDownloadLink = async () => {
@@ -14,14 +16,16 @@ function App() {
     data.append("name", file.name);
     data.append("file", file, file.name);
     try {
+      setLoading(true);
 
       const response = await axios.post(
         "http://localhost:5000/api/v1/upload",
         data
       );
-      setDownloadLink(response.data.downloadLink)
-      console.log(response.data);
+      setDownloadLink(response.data.downloadLink);
 
+      setLoading(false);
+      
     } catch (error) {
       console.log(error);
     }
@@ -29,10 +33,26 @@ function App() {
 
   return (
     <>
-      <div className="app h-screen w-screen flex gap-7 justify-center items-center bg-[#111827] text-white">
+      <div className="app h-screen w-screen flex flex-col md:flex-row gap-7 justify-center items-center bg-[#111827] text-white">
         <Home getDownloadLink={getDownloadLink} file={file} setFile={setFile} />
-        {downloadLink && <DownloadLinkComponent downloadLink={downloadLink}/>}
-        {/* <DownloadLinkComponent downloadLink={downloadLink}/> */}
+
+        {/* loader  */}
+        { (
+          loading &&  <div className="w-52 flex justify-center">
+            <Hourglass
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="hourglass-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              colors={["#306cce", "#72a1ed"]}
+            />
+          </div>
+        )}
+
+        {/* <ShareButtons downloadLink={downloadLink}/> */}
+        {downloadLink && !loading && <DownloadLinkComponent downloadLink={downloadLink} />}
       </div>
     </>
   );
