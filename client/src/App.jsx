@@ -15,11 +15,14 @@ function App() {
     const data = new FormData();
     data.append("name", file.name);
     data.append("file", file, file.name);
+
+    const serverUrl = import.meta.env.VITE_APP_SERVER_URL;
+
     try {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/api/v1/upload",
+        `${serverUrl}/api/v1/upload`,
         data
       );
       setDownloadLink(response.data.downloadLink);
