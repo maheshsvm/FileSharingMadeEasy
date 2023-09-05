@@ -1,9 +1,17 @@
 import File from '../models/fileModel.js'
+import fs from 'fs'
+
 
 export const uploadController = async(req , res)=>{
     try {
         const data = await File.create({name : req.file.originalname , path : req.file.path})
         res.status(200).json({success : true , downloadLink : `${process.env.SERVER_URL}/api/v1/file/${data._id}`})
+
+        // setTimeout(() => {
+            
+        // }, timeout);
+        
+
         
     } catch (error) {
         res.status(400).json({success : false , error : error.message})

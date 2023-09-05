@@ -1,11 +1,14 @@
 import express from "express"
+
 import dotenv from 'dotenv'
+dotenv.config()
+
 import connectDB from "./db.js";
 import fileRoutes from "./routes/fileRoutes.js";
 import cors from 'cors'
-import QRCode from "qrcode";
+import cleanupCronJob from "./cleanup.js";
 
-dotenv.config()
+// configuring envoirnment variables
 
 const app = express();
 
@@ -34,6 +37,13 @@ app.use('/api/v1', fileRoutes)
 //     })
 //     res.send("done")
 // })
+
+// performing cleanup every day at midnight
+
+
+// Schedule the script to run at midnight (00:00) every day for deleting files older than 7 days
+cleanupCronJob.start();
+
 
 // setting up server and database
 connectDB();
